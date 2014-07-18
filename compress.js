@@ -130,10 +130,10 @@ function ncdf(x) {
   return 1 - 0.5*erfcc(x/Math.sqrt(2));
 }
 
-function makeNormalTable(mu, sigma, precision) {
+function makeNormalTable(mu, sigma, precision, extent) {
   var frequencies = {};
 
-  for (var i = 1; i < 8*precision; i += 1) {
+  for (var i = 1; i < extent*precision; i += 1) {
     var x1 = (i - 1)*sigma/precision,
         x2 = i*sigma/precision,
         p  = ncdf(x2) - ncdf(x1);
@@ -147,10 +147,10 @@ function makeNormalTable(mu, sigma, precision) {
   return huffman(frequencies);
 }
 
-function compressNormal(table, mu, sigma, precision, x) {
+function compressNormal(table, mu, sigma, precision, extent, x) {
   var q = Math.ceil((x - mu)*precision/sigma);
 
-  if (q > 8*precision - 1) { q = 8*precision - 1; }
+  if (q > extent*precision - 1) { q = extent*precision - 1; }
 
   return table[q];
 }
@@ -159,13 +159,19 @@ function uncompressNormal(table, mu, sigma, precision, x) {
   return decodeHuffman(table, x)*sigma/precision + mu;
 }
 
-if (process) {
-  var mu = 0, sigma = 1, precision = 10, x = 10
-  var table = makeNormalTable(mu, sigma, precision);
-  var untable = buildHuffmanDecoderTable(table);
-  var compressed = compressNormal(table, mu, sigma, precision, x);
-  var uncompressed = uncompressNormal(untable, mu, sigma, precision, compressed);
-  console.log(compressed);
-  console.log(uncompressed);
+function bincode(n, bits) {
+  var result = '';
+
+  for (var i = 0; i < bits; ++i) {
+    result += (n&(1 << i)) ? '1' : '0';
+  }
+
+  return result;
+}
+
+function binary(str) {
+  for (var i = 0; i < str.length; i += 8) {
+    var x = str[i] | 
+  }
 }
 
