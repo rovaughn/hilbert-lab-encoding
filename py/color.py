@@ -25,6 +25,9 @@ class RGB:
       z = r * 0.0193 + g * 0.1192 + b * 0.9505
     )
 
+  def hex(self):
+    return '#%02x%02x%02x' % (self.r, self.g, self.b)
+
   def __str__(self):
     return 'RGB(%s, %s, %s)' % (self.r, self.g, self.b)
 
